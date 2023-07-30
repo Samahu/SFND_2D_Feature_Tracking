@@ -88,7 +88,7 @@ int main(int argc, const char *argv[])
         }
         else if (detectorType.compare("HARRIS") == 0)
         {
-           detKeypointsHarris(keypoints, img, bVis);
+           detKeypointsHarris(keypoints, imgGray, bVis);
         }
         else
         {
@@ -104,7 +104,14 @@ int main(int argc, const char *argv[])
         cv::Rect vehicleRect(535, 180, 180, 150);
         if (bFocusOnVehicle)
         {
-            // ...
+            for (auto it = keypoints.begin(); it != keypoints.end();) {
+                if (vehicleRect.contains(it->pt)) {
+                    ++it;
+                } else
+                {
+                    it = keypoints.erase(it);
+                }
+            }
         }
 
         //// EOF STUDENT ASSIGNMENT
