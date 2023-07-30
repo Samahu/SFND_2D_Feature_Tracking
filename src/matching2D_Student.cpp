@@ -18,7 +18,7 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
     }
     else if (matcherType.compare("MAT_FLANN") == 0)
     {
-        // ...
+        matcher = cv::FlannBasedMatcher::create();
     }
 
     // perform matching task
@@ -29,8 +29,15 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
     }
     else if (selectorType.compare("SEL_KNN") == 0)
     { // k nearest neighbors (k=2)
-
-        // ...
+        std::vector< std::vector<cv::DMatch> > knn_matches;
+        matcher->knnMatch(descSource, descRef, knn_matches, 2);
+        const float ratio_thresh = 0.7f;
+        for (size_t i = 0; i < knn_matches.size(); ++i)
+        {
+            if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance) {
+                matches.push_back(knn_matches[i][0]);
+            }
+        }
     }
 }
 
