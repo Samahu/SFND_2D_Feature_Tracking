@@ -86,6 +86,10 @@ int main(int argc, const char *argv[])
         {
             detKeypointsShiTomasi(keypoints, imgGray, bVis);
         }
+        else if (detectorType.compare("HARRIS") == 0)
+        {
+           detKeypointsHarris(keypoints, img, bVis);
+        }
         else
         {
             detKeypointsModern(keypoints, imgGray, detectorType, bVis);

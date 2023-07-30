@@ -160,7 +160,22 @@ void detKeypointsHarris(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, bool
 }
 
 void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std::string detectorType, bool bVis) {
-    if (detectorType.compare("HARRIS") == 0) {
-        detKeypointsHarris(keypoints, img, bVis);
+    cv::Ptr<cv::FeatureDetector> detector;
+    if (detectorType.compare("FAST") == 0) {
+        detector = cv::FastFeatureDetector::create();
     }
+    else if (detectorType.compare("BRISK") == 0) {
+        detector = cv::BRISK::create();
+    }
+    else if (detectorType.compare("ORB") == 0) {
+        detector = cv::ORB::create();
+    }
+    else if (detectorType.compare("AKAZE") == 0) {
+        detector = cv::AKAZE::create();
+    }    
+    else if (detectorType.compare("SIFT") == 0) {
+        detector = cv::xfeatures2d::SIFT::create();
+    }
+    detector->detect(img, keypoints);
+
 }
