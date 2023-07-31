@@ -6,6 +6,7 @@
 #include <vector>
 #include <cmath>
 #include <limits>
+#include <map>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -76,11 +77,15 @@ int main(int argc, const char *argv[])
 
         // extract 2D keypoints from current image
         vector<cv::KeyPoint> keypoints; // create empty feature list for current image
-        string detectorType = "SHITOMASI";
+        string detectorType = "HARRIS";   // SHITOMASI, HARRIS, FAST, BRISK, ORB, AKAZE, SIFT
+        string descriptorType = "FREAK"; // BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
 
         //// STUDENT ASSIGNMENT
         //// TASK MP.2 -> add the following keypoint detectors in file matching2D.cpp and enable string-based selection based on detectorType
         //// -> HARRIS, FAST, BRISK, ORB, AKAZE, SIFT
+
+        // Apply corner detection
+        double t = (double)cv::getTickCount();
 
         if (detectorType.compare("SHITOMASI") == 0)
         {
@@ -94,6 +99,9 @@ int main(int argc, const char *argv[])
         {
             detKeypointsModern(keypoints, imgGray, detectorType, bVis);
         }
+        t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
+        cout << detectorType << " took " << 1000 * t / 1.0 << " ms" << endl;
+
         //// EOF STUDENT ASSIGNMENT
 
         //// STUDENT ASSIGNMENT
@@ -102,10 +110,14 @@ int main(int argc, const char *argv[])
         // only keep keypoints on the preceding vehicle
         bool bFocusOnVehicle = true;
         cv::Rect vehicleRect(535, 180, 180, 150);
+        std::map<int, int> hist;
+        
         if (bFocusOnVehicle)
         {
             for (auto it = keypoints.begin(); it != keypoints.end();) {
                 if (vehicleRect.contains(it->pt)) {
+                    int bin = (int(it->size) / 10) * 10; 
+                    ++hist[bin];
                     ++it;
                 }
                 else
@@ -115,12 +127,18 @@ int main(int argc, const char *argv[])
             }
         }
 
-        cout << "number of selected key points for focus vehcile = " << keypoints.size() << endl;
+        static int img_nb = 0;
+        cout << "image: " << ++img_nb << ";number of selected key points for focus vehicle = " << keypoints.size() << endl;
+        /*
+        for (const auto& kv : hist)
+            cout << "size: " << kv.first << ", count: " << kv.second << endl;
+        */
+        cout << "=====" << endl;
 
         //// EOF STUDENT ASSIGNMENT
 
         // optional : limit number of keypoints (helpful for debugging and learning)
-        bool bLimitKpts = true;
+        bool bLimitKpts = false;
         if (bLimitKpts)
         {
             int maxKeypoints = 20;
@@ -144,7 +162,6 @@ int main(int argc, const char *argv[])
         //// -> BRIEF, ORB, FREAK, AKAZE, SIFT
 
         cv::Mat descriptors;
-        string descriptorType = "BRISK"; // BRIEF, ORB, FREAK, AKAZE, SIFT
         descKeypoints((dataBuffer.end() - 1)->keypoints, (dataBuffer.end() - 1)->cameraImg, descriptors, descriptorType);
         //// EOF STUDENT ASSIGNMENT
 
@@ -178,8 +195,10 @@ int main(int argc, const char *argv[])
 
             cout << "#4 : MATCH KEYPOINT DESCRIPTORS done" << endl;
 
+            cout << "matches = " << matches.size() << endl;
+
             // visualize matches between current and previous image
-            bVis = true;
+            bVis = false;
             if (bVis)
             {
                 cv::Mat matchImg = ((dataBuffer.end() - 1)->cameraImg).clone();
