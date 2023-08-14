@@ -6,7 +6,7 @@ using namespace std;
 // Find best matches for keypoints in two camera images based on several matching methods
 void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::KeyPoint> &kPtsRef, cv::Mat &descSource, cv::Mat &descRef,
                       std::vector<cv::DMatch> &matches, std::string descriptorType, std::string matcherType, std::string selectorType)
-{
+{    
     // configure matcher
     bool crossCheck = false;
     cv::Ptr<cv::DescriptorMatcher> matcher;
@@ -21,7 +21,7 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
     else if (matcherType.compare("MAT_FLANN") == 0)
     {
         // make sure both as 32f when using flann
-        if (descSource.type() != CV_32F)
+        // if (descSource.type() != CV_32F)
         {
             descSource.convertTo(descSource, CV_32F);
             descRef.convertTo(descRef, CV_32F);
@@ -32,18 +32,20 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
     // perform matching task
     if (selectorType.compare("SEL_NN") == 0)
     { // nearest neighbor (best match)
-
         matcher->match(descSource, descRef, matches); // Finds the best match for each descriptor in desc1
     }
     else if (selectorType.compare("SEL_KNN") == 0)
     { // k nearest neighbors (k=2)
         std::vector< std::vector<cv::DMatch> > knn_matches;
-        matcher->knnMatch(descSource, descRef, knn_matches, 2);
-        const float ratio_thresh = 0.8f;
-        for (size_t i = 0; i < knn_matches.size(); ++i)
-        {
-            if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance) {
-                matches.push_back(knn_matches[i][0]);
+        if(kPtsSource.size() > 2 && kPtsRef.size() > 2) {   // only consider the case where we have more than 2 kpts
+            matcher->knnMatch(descSource, descRef, knn_matches, 2);
+
+            const float ratio_thresh = 0.8f;
+            for (size_t i = 0; i < knn_matches.size(); ++i)
+            {
+                if (knn_matches[i][0].distance < ratio_thresh * knn_matches[i][1].distance) {
+                    matches.push_back(knn_matches[i][0]);
+                }
             }
         }
     }

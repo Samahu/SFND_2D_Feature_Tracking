@@ -45,53 +45,53 @@ int main(int argc, const char *argv[])
 
     std::vector<std::tuple<string, string, string>> detector_desscriptor_combinations = {
         {"SHITOMASI", "BRISK", "MAT_BF"},
-        {"SHITOMASI", "BRIEF", "MAT_FLANN"}, // CRASHED
-        {"SHITOMASI", "ORB", "MAT_BF"},
-        {"SHITOMASI", "FREAK", "MAT_FLANN"}, // CRASHED
-        {"SHITOMASI", "AKAZE", "MAT_FLANN"},
+        {"SHITOMASI", "BRIEF", "MAT_FLANN"},
+        {"SHITOMASI", "ORB", "MAT_FLANN"},
+        {"SHITOMASI", "FREAK", "MAT_FLANN"},
+        {"SHITOMASI", "AKAZE", "MAT_FLANN"},   // crash
         {"SHITOMASI", "SIFT", "MAT_FLANN"},
 
-        {"HARRIS", "BRISK", "MAT_BF"},
-        {"HARRIS", "BRIEF", "MAT_BF"},
-        {"HARRIS", "ORB", "MAT_BF"},
-        {"HARRIS", "FREAK", "MAT_BF"},
-        {"HARRIS", "AKAZE", "MAT_BF"},
-        {"HARRIS", "SIFT", "MAT_BF"},
+        {"HARRIS", "BRISK", "MAT_FLANN"},
+        {"HARRIS", "BRIEF", "MAT_FLANN"},
+        {"HARRIS", "ORB", "MAT_FLANN"},
+        {"HARRIS", "FREAK", "MAT_FLANN"},
+        {"HARRIS", "AKAZE", "MAT_FLANN"},   // crash
+        {"HARRIS", "SIFT", "MAT_FLANN"},
 
-        {"FAST", "BRISK", "MAT_BF"},
-        {"FAST", "BRIEF", "MAT_BF"},
-        {"FAST", "ORB", "MAT_BF"},
-        {"FAST", "FREAK", "MAT_BF"},
-        {"FAST", "AKAZE", "MAT_BF"},
-        {"FAST", "SIFT", "MAT_BF"},
+        {"FAST", "BRISK", "MAT_FLANN"},
+        {"FAST", "BRIEF", "MAT_FLANN"},
+        {"FAST", "ORB", "MAT_FLANN"},
+        {"FAST", "FREAK", "MAT_FLANN"},    // crash
+        {"FAST", "AKAZE", "MAT_FLANN"},     // crash
+        {"FAST", "SIFT", "MAT_FLANN"},
 
-        {"BRISK", "BRISK", "MAT_BF"},
-        {"BRISK", "BRIEF", "MAT_BF"},
-        {"BRISK", "ORB", "MAT_BF"},
-        {"BRISK", "FREAK", "MAT_BF"},
-        {"BRISK", "AKAZE", "MAT_BF"},
-        {"BRISK", "SIFT", "MAT_BF"},
+        {"BRISK", "BRISK", "MAT_FLANN"},
+        {"BRISK", "BRIEF", "MAT_FLANN"},
+        {"BRISK", "ORB", "MAT_FLANN"},
+        {"BRISK", "FREAK", "MAT_FLANN"},   //?
+        {"BRISK", "AKAZE", "MAT_FLANN"},
+        {"BRISK", "SIFT", "MAT_FLANN"},
 
-        {"ORB", "BRISK", "MAT_BF"},
-        {"ORB", "BRIEF", "MAT_BF"},
-        {"ORB", "ORB", "MAT_BF"},
-        {"ORB", "FREAK", "MAT_BF"},
-        {"ORB", "AKAZE", "MAT_BF"},
-        {"ORB", "SIFT", "MAT_BF"},
+        {"ORB", "BRISK", "MAT_FLANN"},
+        {"ORB", "BRIEF", "MAT_FLANN"},
+        {"ORB", "ORB", "MAT_FLANN"},
+        {"ORB", "FREAK", "MAT_FLANN"},
+        {"ORB", "AKAZE", "MAT_FLANN"},
+        {"ORB", "SIFT", "MAT_FLANN"},
 
-        {"AKAZE", "BRISK", "MAT_BF"},
-        {"AKAZE", "BRIEF", "MAT_BF"},
-        {"AKAZE", "ORB", "MAT_BF"},
-        {"AKAZE", "FREAK", "MAT_BF"},
-        {"AKAZE", "AKAZE", "MAT_BF"},
-        {"AKAZE", "SIFT", "MAT_BF"},
+        {"AKAZE", "BRISK", "MAT_FLANN"},
+        {"AKAZE", "BRIEF", "MAT_FLANN"},
+        {"AKAZE", "ORB", "MAT_FLANN"},
+        {"AKAZE", "FREAK", "MAT_FLANN"},
+        {"AKAZE", "AKAZE", "MAT_FLANN"},
+        {"AKAZE", "SIFT", "MAT_FLANN"},
 
-        {"SIFT", "BRISK", "MAT_BF"},
-        {"SIFT", "BRIEF", "MAT_BF"},
-        {"SIFT", "ORB", "MAT_BF"},
-        {"SIFT", "FREAK", "MAT_BF"},
-        {"SIFT", "AKAZE", "MAT_BF"},
-        {"SIFT", "SIFT", "MAT_BF"},
+        {"SIFT", "BRISK", "MAT_FLANN"},
+        {"SIFT", "BRIEF", "MAT_FLANN"},
+        {"SIFT", "ORB", "MAT_FLANN"},
+        {"SIFT", "FREAK", "MAT_FLANN"},
+        {"SIFT", "AKAZE", "MAT_FLANN"},
+        {"SIFT", "SIFT", "MAT_FLANN"},
     };
 
     for (auto kv : detector_desscriptor_combinations) {
@@ -103,7 +103,7 @@ int main(int argc, const char *argv[])
     string detectorType = std::get<0>(kv);   // SHITOMASI, HARRIS, FAST, BRISK, ORB, AKAZE, SIFT
     string descriptorName = std::get<1>(kv); // BRISK, BRIEF, ORB, FREAK, AKAZE, SIFT
     string matcherType = std::get<2>(kv);    // MAT_BF, MAT_FLANN
-    string descriptorType = "DES_BINARY"; // DES_BINARY, DES_HOG
+    string descriptorType = "DES_HOG"; // DES_BINARY, DES_HOG
     string selectorType = "SEL_KNN";       // SEL_NN, SEL_KNN
 
     try {
@@ -180,7 +180,7 @@ int main(int argc, const char *argv[])
         if (bFocusOnVehicle)
         {
             // cout << "filtering points with rect: " << vehicleRect << endl;
-            cout << "number of points before filter: " << keypoints.size();
+            // cout << "number of points before filter: " << keypoints.size();
             for (auto it = keypoints.begin(); it != keypoints.end();) {
                 if (vehicleRect.contains(it->pt)) {
                     int bin = (int(it->size) / 10) * 10; 
@@ -192,7 +192,7 @@ int main(int argc, const char *argv[])
                     it = keypoints.erase(it);
                 }
             }
-            cout << ", after filter: " << keypoints.size() << endl;
+            // cout << ", after filter: " << keypoints.size() << endl;
         }
 
         static int img_nb = 0;
@@ -293,13 +293,17 @@ int main(int argc, const char *argv[])
 
     } // eof loop over all images
 
-    cout << "detector: " << detectorType << ", descriptor: " << descriptorName
-        << ", points " << total_detected_points << ", matches " << total_matches
-        << ", t1 " << 1000 * total_detection_time / 1.0 << " ms"
-        << ", t2 = " << 1000 * total_extraction_time / 1.0 << " ms" << endl;
+    cout << "detector: " << detectorType << ",\tdescriptor: " << descriptorName
+        << ",\tpoints " << total_detected_points << ",\tmatches " << total_matches
+        << ",\tt1 " << 1000 * total_detection_time / 1.0 << " ms"
+        << ",\tt2 = " << 1000 * total_extraction_time / 1.0 << " ms" << endl;
 
-    } catch (...) {
-        cout << "detector: " << detectorType << ", descriptor: " << descriptorName << " CRASHED!" << endl;
+    }
+    // catch (const std::exception& ex) {
+    //     cout << "detector: " << detectorType << ", descriptor: " << descriptorName << " CRASHED: " << ex.what() << endl;
+    // }
+    catch (...) {
+        cout << "detector: " << detectorType << ",\tdescriptor: " << descriptorName << "\tCRASHED!" << endl;
     }
        
     }
